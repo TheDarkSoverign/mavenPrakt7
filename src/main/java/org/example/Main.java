@@ -6,10 +6,10 @@ import java.util.Scanner;
 public class Main {
     protected static Scanner sc = new Scanner(System.in);
     protected static Connection con;
-    static final String schema = "task6";
-    protected static String table = "task6";
-    static final String createTable = "CREATE TABLE IF NOT EXISTS " + table + " (ID SERIAL, matrix1 int[], matrix2 int[], matrixMult int[])";
-    static final String insertIntoTable = "INSERT INTO " + table + " (matrix1, matrix2, matrixMult) VALUES (?, ?, ?)";
+    static final String schema = "task7";
+    protected static String table = "task7";
+    static final String createTable = "CREATE TABLE IF NOT EXISTS " + table + " (ID SERIAL, unsorted_array int[], sorted_array int[])";
+    static final String insertIntoTable = "INSERT INTO " + table + " (unsorted_array, sorted_array) VALUES (?, ?)";
     static final String selectFromTable = "SELECT * FROM " + table;
 
 
@@ -59,8 +59,8 @@ public class Main {
             System.out.println("Меню программы:");
             System.out.println("1. Вывести все таблицы.");
             System.out.println("2. Создать/выбрать таблицу.");
-            System.out.println("3. Ввести две матрицы (7х7) и сохранить в таблицу.");
-            System.out.println("4. Перемножить матрицу и сохранить в таблицу.");
+            System.out.println("3. Ввести массив (35 элементов) и сохранить в таблицу.");
+            System.out.println("4. Отсортировать массив и сохранить в таблицу.");
             System.out.println("5. Записать данные в Excel");
             System.out.println("0. Выход");
             System.out.print("Выберите пункт меню: ");

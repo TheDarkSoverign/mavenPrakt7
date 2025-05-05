@@ -4,8 +4,7 @@ import java.sql.*;
 import java.util.Arrays;
 
 public class ArrayPI extends Main {
-    int[][] matrix1;
-    int[][] matrix2;
+    Integer[] array;
 
     public void task1() {
         String query = "SELECT table_name AS Названия_таблиц FROM information_schema.tables WHERE table_schema = '" + schema + "'";
@@ -31,7 +30,6 @@ public class ArrayPI extends Main {
         table = sc.next();
         try {
             PreparedStatement pst = con.prepareStatement(createTable);
-            pst.setString(1, table);
             pst.executeUpdate();
             System.out.println("Таблица " + table + " успешно создана/выбрана!");
         } catch (SQLException e) {
@@ -41,31 +39,21 @@ public class ArrayPI extends Main {
     }
 
     public void task3() {
-        System.out.println("Введите матрицу 1");
-        matrix1 = createMatrix();
-        System.out.println("Матрица 1: ");
-        for (int[] i : matrix1) {
-            System.out.println(Arrays.toString(i));
-        }
-
-        System.out.println("Введите матрицу 2");
-        matrix2 = createMatrix();
-        System.out.println("Матрица 2:");
-        for (int[] i : matrix2) {
-            System.out.println(Arrays.toString(i));
-        }
+        System.out.print("Введите массив из 35 чисел: ");
+        array = createArray();
+        System.out.println("Массив: " + Arrays.toString(array));
 
         insertData();
         selectData();
     }
 
     public void task4() {
-        if (matrix1 == null || matrix2 == null) {
+        if (array == null) {
             System.out.println("Матрицы пустые!");
             task3();
         }
-        Matrix multiply = new Matrix(matrix1, matrix2);
-        multiply.multiply();
+        Sort sort = new Sort(array);
+        sort.sort();
 
         selectData();
     }
@@ -73,9 +61,8 @@ public class ArrayPI extends Main {
     public void insertData() {
         System.out.println("Сохраняю в таблицу...");
         try (PreparedStatement pst = con.prepareStatement(insertIntoTable)) {
-            pst.setArray(1, con.createArrayOf("INTEGER", matrix1));
-            pst.setArray(2, con.createArrayOf("INTEGER", matrix2));
-            pst.setNull(3, Types.NULL);
+            pst.setArray(1, con.createArrayOf("INTEGER", array));
+            pst.setNull(2, Types.NULL);
             pst.executeUpdate();
             System.out.println("Все выполненные результаты добавлены в таблицу!");
         } catch (
@@ -89,28 +76,19 @@ public class ArrayPI extends Main {
         try (PreparedStatement pst = con.prepareStatement(selectFromTable)) {
             try (ResultSet rs = pst.executeQuery()) {
                 System.out.println("Полученные данные: ");
-                System.out.printf("%3s | %-31s | %-31s | %-31s \n", "ID", "Матрица 1", "Матрица 2", "Перемноженная матрица");
+                System.out.printf("%3s | %-150s | %-150s \n", "ID", "Изначальный список", "Отсортированный список");
                 while (rs.next()) {
                     int ID = rs.getInt(1);
 
-                    Array matrixArray1 = rs.getArray(2);
-                    Integer[][] matrix1 = (Integer[][]) matrixArray1.getArray();
+                    Array array1 = rs.getArray(2);
+                    Integer[] array = (Integer[]) array1.getArray();
 
-                    Array matrixArray2 = rs.getArray(3);
-                    Integer[][] matrix2 = (Integer[][]) matrixArray2.getArray();
-
-                    Array matrixArray3 = rs.getArray(4);
-                    if (matrixArray3 != null) {
-                        Integer[][] matrixMult = (Integer[][]) matrixArray3.getArray();
-                        System.out.printf("%2d. | %-31s | %-31s | %-31s \n", ID, Arrays.toString(matrix1[0]), Arrays.toString(matrix2[0]), Arrays.toString(matrixMult[0]));
-                        for (int i = 1; i < 7; i++) {
-                            System.out.printf("%3s | %-31s | %-31s | %-31s \n", "", Arrays.toString(matrix1[i]), Arrays.toString(matrix2[i]), Arrays.toString(matrixMult[i]));
-                        }
+                    Array arraySort1 = rs.getArray(3);
+                    if (arraySort1 != null) {
+                        Integer[] arraySort = (Integer[]) arraySort1.getArray();
+                        System.out.printf("%2d. | %-150s | %-150s \n", ID, Arrays.toString(array), Arrays.toString(arraySort));
                     } else {
-                        System.out.printf("%2d. | %-31s | %-31s | %-31s \n", ID, Arrays.toString(matrix1[0]), Arrays.toString(matrix2[0]), "NULL");
-                        for (int i = 1; i < 7; i++) {
-                            System.out.printf("%3s | %-31s | %-31s | %-31s \n", "", Arrays.toString(matrix1[i]), Arrays.toString(matrix2[i]), "NULL");
-                        }
+                        System.out.printf("%2d. | %-150s | %-150s \n", ID, Arrays.toString(array), "NULL");
                     }
                 }
             }
@@ -119,23 +97,19 @@ public class ArrayPI extends Main {
         }
     }
 
-    public int[][] createMatrix() {
-        int[][] matrix = new int[7][7];
-        for (int i = 0; i < matrix.length; i++) {
-            System.out.print("Введите строку чисел ");
-            System.out.print(i + 1);
-            System.out.print(": ");
-            for (int j = 0; j < matrix[i].length; j++) {
-                try {
-                    matrix[i][j] = Integer.parseInt(sc.next());
-                } catch (NumberFormatException e) {
-                    System.out.print("Неправильный тип данных в строке ");
-                    System.out.println(i-- + 1);
-                    break;
-                }
+    public Integer[] createArray() {
+        Integer[] array = new Integer[35];
+        for (int i = 0; i < array.length; i++) {
+            try {
+                array[i] = Integer.parseInt(sc.next());
+            } catch (NumberFormatException e) {
+                System.out.print("Неправильный тип данных символа ");
+                System.out.println(i);
+                System.out.println("Продолжите массив чисел, начиная с " + i-- + " числа: ");
             }
         }
+
         sc.nextLine();
-        return matrix;
+        return array;
     }
 }
