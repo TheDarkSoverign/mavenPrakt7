@@ -17,23 +17,21 @@ public class ExportToExcel extends Main {
 
         try (PreparedStatement pst = con.prepareStatement(selectFromTable); ResultSet rs = pst.executeQuery()) {
             Workbook wb = new XSSFWorkbook();
-            Sheet sheet = wb.createSheet("task 1");
+            Sheet sheet = wb.createSheet("task 7");
             Row row = sheet.createRow(0);
             row.createCell(0).setCellValue(rs.getMetaData().getColumnName(1));
             row.createCell(1).setCellValue(rs.getMetaData().getColumnName(2));
             row.createCell(2).setCellValue(rs.getMetaData().getColumnName(3));
-            row.createCell(3).setCellValue(rs.getMetaData().getColumnName(4));
 
             int rowIndex = 1;
             while (rs.next()) {
                 Row row1 = sheet.createRow(rowIndex++);
                 row1.createCell(0).setCellValue(rs.getInt(1));
                 row1.createCell(1).setCellValue(rs.getArray(2).toString());
-                row1.createCell(2).setCellValue(rs.getArray(3).toString());
-                if (rs.getArray(4) == null) {
-                    row1.createCell(3).setCellValue("null");
+                if (rs.getArray(3) == null) {
+                    row1.createCell(2).setCellValue("null");
                 } else {
-                    row1.createCell(3).setCellValue(rs.getArray(4).toString());
+                    row1.createCell(2).setCellValue(rs.getArray(3).toString());
                 }
             }
             int columnCount = sheet.getRow(0).getPhysicalNumberOfCells();
