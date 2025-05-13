@@ -7,10 +7,7 @@ public class Main {
     protected static Scanner sc = new Scanner(System.in);
     protected static Connection con;
     static final String schema = "task7";
-    protected static String table = "task7";
-    static final String createTable = "CREATE TABLE IF NOT EXISTS " + table + " (ID SERIAL, unsorted_array int[], sorted_array int[])";
-    static final String insertIntoTable = "INSERT INTO " + table + " (unsorted_array, sorted_array) VALUES (?, ?)";
-    static final String selectFromTable = "SELECT * FROM " + table;
+    protected static String table;
 
 
     static String Url = "jdbc:postgresql://localhost:5432/postgres";
@@ -41,6 +38,7 @@ public class Main {
             }
         }
 
+        String createTable = "CREATE TABLE IF NOT EXISTS task7 (ID SERIAL, unsorted_array int[], sorted_array int[])";
         try {
             PreparedStatement pst = con.prepareStatement(createTable);
             pst.executeUpdate();
